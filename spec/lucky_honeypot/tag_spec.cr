@@ -17,7 +17,6 @@ describe LuckyHoneypot::Tag do
       page = LuckyHoneypotTagWithStyleTestPage.new(test_context)
       page.render.to_s
 
-      puts page.context.session.inspect
       timestamp = page.context.session.get(:honeypot_timestamp_user_name)
       timestamp.size.should eq(13)
       timestamp.to_i64.should be <= Time.utc.to_unix_ms
@@ -45,35 +44,35 @@ describe LuckyHoneypot::Tag do
   end
 end
 
-private abstract class LuckyHoneypotBaseTestPage
+abstract class LuckyHoneypotBaseTestPage
   include Lucky::HTMLPage
   include LuckyHoneypot::Tag
 
   abstract def render
 end
 
-private class LuckyHoneypotTagWithStyleTestPage < LuckyHoneypotBaseTestPage
+class LuckyHoneypotTagWithStyleTestPage < LuckyHoneypotBaseTestPage
   def render
     honeypot_input("user:name")
     view
   end
 end
 
-private class LuckyHoneypotTagWithClassTestPage < LuckyHoneypotBaseTestPage
+class LuckyHoneypotTagWithClassTestPage < LuckyHoneypotBaseTestPage
   def render
     honeypot_input("user:name", class: "visually-hidden")
     view
   end
 end
 
-private class LuckyHoneypotTagWithCustomStyleTestPage < LuckyHoneypotBaseTestPage
+class LuckyHoneypotTagWithCustomStyleTestPage < LuckyHoneypotBaseTestPage
   def render
     honeypot_input("user:name", style: "display:none")
     view
   end
 end
 
-private class LuckyHoneypotTagWithAdditionalAttributesTestPage < LuckyHoneypotBaseTestPage
+class LuckyHoneypotTagWithAdditionalAttributesTestPage < LuckyHoneypotBaseTestPage
   def render
     honeypot_input("user:name", data_very: "lukcy")
     view
