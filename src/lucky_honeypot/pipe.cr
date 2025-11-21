@@ -1,8 +1,9 @@
 module LuckyHoneypot::Pipe
   macro honeypot(name, wait = 1.second, &block)
     {%
-      session_key = "#{LuckyHoneypot::SESSION_KEY_PREFIX.id}_#{name.id}"
-      method_name = %(reject_#{name.gsub(/\:/, "_").id}_honeypot).id
+      safe_name = name.gsub(/\:/, "_")
+      session_key = "#{LuckyHoneypot::SESSION_KEY_PREFIX.id}_#{safe_name.id}"
+      method_name = %(reject_#{safe_name.id}_honeypot).id
     %}
 
     before {{method_name}}
