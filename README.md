@@ -85,8 +85,8 @@ honeypot_input "user:website", class: "visually-hidden"
 ```
 
 > [!IMPORTANT]
-> When a `class` attribute is passed the, the default `style` attribute won't be
-> rendered. However, you can pass your own `style` attribute.
+> When a `class` attribute is passed, the default `style` attribute won't be
+> rendered. However, you can pass your own `style` attribute as well.
 
 Aside from the special `class` attribute, you can pass any other attribute as
 well:
