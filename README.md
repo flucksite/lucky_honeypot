@@ -2,6 +2,16 @@
 
 🍯 Simple invisible captcha spam protection for Lucky Framework apps.
 
+## How it works
+
+This shard uses two techniques to catch spambots:
+
+1. Invisible fields. Bots fill out every field, including ones hidden with CSS
+2. Timing checks. Bots submit forms instantly, humans need time to fill them out
+
+When either check fails, the submission is quietly rejected. The bot thinks it
+succeeded and moves on, while your application stays spam-free.
+
 ## Installation
 
 1. Add the dependency to your `shard.yml`:
