@@ -1,5 +1,5 @@
 module LuckyHoneypot::Pipe
-  macro honeypot(name, wait = 1.second, &block)
+  macro honeypot(name, wait = 2.seconds, &block)
     {%
       safe_name = name.gsub(/\:/, "_")
       session_key = "#{LuckyHoneypot::SESSION_KEY_PREFIX.id}_#{safe_name.id}"
@@ -11,15 +11,17 @@ module LuckyHoneypot::Pipe
     private def {{method_name}}
       if honeypot_not_filled?({{name}}) &&
          honeypot_timespan_elapsed?({{session_key}}, {{wait}})
-        session.delete({{session_key}})
         continue
       else
         {% if block.nil? %}
-          head HTTP::Status::NO_CONTENT
+          response.status = HTTP::Status::NO_CONTENT
+          plain_text ""
         {% else %}
           {{block.body}}
         {% end %}
       end
+    ensure
+      session.delete({{session_key}})
     end
   end
 
@@ -33,6 +35,6 @@ module LuckyHoneypot::Pipe
   ) : Bool
     return false unless timestamp = session.get?(key_name).try(&.to_i64)
 
-    wait < (Time.utc.to_unix_ms - timestamp).seconds
+    wait < (Time.utc.to_unix_ms - timestamp).milliseconds
   end
 end
