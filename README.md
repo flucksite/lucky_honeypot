@@ -2,6 +2,10 @@
 
 🍯 Simple invisible captcha spam protection for Lucky Framework apps.
 
+> [!Note]
+> The original repository is hosted at
+> [https://codeberg.org/fluck/lucky_honeypot](https://codeberg.org/fluck/lucky_honeypot).
+
 ## How it works
 
 This shard uses two techniques to catch spambots:
