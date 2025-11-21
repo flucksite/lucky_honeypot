@@ -132,7 +132,7 @@ honeypot "user:website" do
 end
 ```
 
-Finally, you also add multiple honeypots, each with their own timing and
+Finally, you can also add multiple honeypots, each with their own timing and
 HTTP handling:
 
 ```crystal
@@ -144,7 +144,7 @@ end
 
 ## Security considerations
 
-This shard provides basic bot protection, but should not be your only line of
+This shard provides basic bot protection, but it should not be your only line of
 defense. Here are few important points to consider:
 
 - It's not foolproof and sophisticated bots can bypass honeypots
