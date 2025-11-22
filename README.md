@@ -43,7 +43,7 @@ class SignUps::NewPage < AuthLayout
   include LuckyHoneypot::Tag
 
   def content
-    form_for SignUps::Create, class: "flow" do
+    form_for SignUps::Create do
       # ...
       honeypot_input "user:website"
       # ...
