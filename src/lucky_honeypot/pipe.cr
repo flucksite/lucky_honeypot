@@ -11,8 +11,10 @@ module LuckyHoneypot::Pipe
     private def {{method_name}}
       if honeypot_not_filled?({{name}}) &&
          honeypot_timespan_elapsed?({{session_key}}, {{wait}})
+        session.delete({{session_key}})
         continue
       else
+        context.session.set({{session_key}}, Time.utc.to_unix_ms.to_s)
         {% if block.nil? %}
           response.status = HTTP::Status::NO_CONTENT
           plain_text ""
@@ -20,8 +22,6 @@ module LuckyHoneypot::Pipe
           {{block.body}}
         {% end %}
       end
-    ensure
-      session.delete({{session_key}})
     end
   end
 

@@ -16,7 +16,7 @@ describe LuckyHoneypot::Pipe do
     route = HoneypotWithDefaults::Create.new(context, params).call
 
     route.context.response.status.should eq(HTTP::Status::NO_CONTENT)
-    context.session.get?(:honeypot_timestamp_user_website).should be_nil
+    context.session.get?(:honeypot_timestamp_user_website).should_not be_nil
   end
 
   it "halts with a fast submission" do
@@ -29,6 +29,30 @@ describe LuckyHoneypot::Pipe do
     route = HoneypotWithDefaults::Create.new(context, params).call
 
     route.context.response.status.should eq(HTTP::Status::NO_CONTENT)
+    context.session.get?(:honeypot_timestamp_user_website).should_not be_nil
+  end
+
+  it "halts successive fast submission attempts" do
+    request = HTTP::Request.new("POST", "/honeypot", headers: headers)
+    context = build_context(request)
+    context.session.set(:honeypot_timestamp_user_website, Time.utc.to_unix_ms.to_s)
+
+    5.times do
+      sleep 50.milliseconds
+
+      route = HoneypotWithDefaults::Create.new(context, params).call
+
+      route.context.response.status.should eq(HTTP::Status::NO_CONTENT)
+      context.session.get?(:honeypot_timestamp_user_website).should_not be_nil
+      # Resets local response context to the default for testing purposes.
+      route.context.response.status = HTTP::Status::OK
+    end
+
+    sleep 101.milliseconds
+
+    route = HoneypotWithDefaults::Create.new(context, params).call
+
+    route.context.response.status.should eq(HTTP::Status::OK)
     context.session.get?(:honeypot_timestamp_user_website).should be_nil
   end
 
