@@ -6,20 +6,20 @@ module LuckyHoneypot::Pipe
       method_name = %(reject_#{safe_name.id}_honeypot).id
     %}
 
-    before {{method_name}}
+    before {{ method_name }}
 
-    private def {{method_name}}
-      if honeypot_not_filled?({{name}}) &&
-         honeypot_timespan_elapsed?({{session_key}}, {{wait}})
-        session.delete({{session_key}})
+    private def {{ method_name }}
+      if honeypot_not_filled?({{ name }}) &&
+         honeypot_timespan_elapsed?({{ session_key }}, {{ wait }})
+        session.delete({{ session_key }})
         continue
       else
-        context.session.set({{session_key}}, Time.utc.to_unix_ms.to_s)
+        context.session.set({{ session_key }}, Time.utc.to_unix_ms.to_s)
         {% if block.nil? %}
           response.status = HTTP::Status::NO_CONTENT
           plain_text ""
         {% else %}
-          {{block.body}}
+          {{ block.body }}
         {% end %}
       end
     end
