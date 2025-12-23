@@ -100,6 +100,18 @@ honeypot_input "user:website", data_purpose: "not for humans"
 > verify submission timing. Consider this when you add your own field instead
 > of using this macro.
 
+### Configuring the submission delay
+
+```crystal
+Habitat.configure do |settings|
+  # Default required delay between page load and form submission.
+  setting.default_delay = 2.seconds
+
+  # Disables the submission delay entirely; useful in test environments.
+  setting.disable_delay = false
+end
+```
+
 ### Configuring the pipe
 
 The `honeypot` macro does two things:
