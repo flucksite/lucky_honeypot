@@ -78,6 +78,21 @@ describe LuckyHoneypot::Pipe do
     route = HoneypotWithCustomBlock::Create.new(context, params).call
     route.context.response.status.should eq(HTTP::Status::SEE_OTHER)
   end
+
+  it "allows skipping the submission delay" do
+    request = HTTP::Request.new("POST", "/honeypot", headers: headers)
+    context = build_context(request)
+    context.session.set(:honeypot_timestamp_user_website, Time.utc.to_unix_ms.to_s)
+
+    sleep 50.milliseconds
+
+    LuckyHoneypot.temp_config(disable_delay: true) do
+      route = HoneypotWithDefaults::Create.new(context, params).call
+
+      route.context.response.status.should eq(HTTP::Status::OK)
+      context.session.get?(:honeypot_timestamp_user_website).should be_nil
+    end
+  end
 end
 
 abstract class TestAction < Lucky::Action

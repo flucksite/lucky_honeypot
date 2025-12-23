@@ -1,5 +1,5 @@
 module LuckyHoneypot::Pipe
-  macro honeypot(name, wait = 2.seconds, &block)
+  macro honeypot(name, wait = LuckyHoneypot.settings.default_delay, &block)
     {%
       safe_name = name.gsub(/\:/, "_")
       session_key = "#{LuckyHoneypot::SESSION_KEY_PREFIX.id}_#{safe_name.id}"
@@ -33,6 +33,7 @@ module LuckyHoneypot::Pipe
     key_name : String,
     wait : Time::Span,
   ) : Bool
+    return true if LuckyHoneypot.settings.disable_delay?
     return false unless timestamp = session.get?(key_name).try(&.to_i64)
 
     wait < (Time.utc.to_unix_ms - timestamp).milliseconds
