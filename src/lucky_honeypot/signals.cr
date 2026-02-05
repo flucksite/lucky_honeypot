@@ -17,4 +17,9 @@ struct LuckyHoneypot::Signals
   def human_rating : Float64
     [m, t, s, k].count { |f| f } / 4
   end
+
+  # Convenience method to caclulate the human rating form a class method.
+  def self.human_rating(json : String) : Float
+    from_json(json).human_rating
+  end
 end
