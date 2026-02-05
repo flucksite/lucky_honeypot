@@ -42,6 +42,16 @@ describe LuckyHoneypot::Tag do
       html.should contain(%(data-very="lukcy"))
     end
   end
+
+  describe "#honeypot_signals" do
+    it "renders a honeypot signals tag" do
+      html = LuckyHoneypotSignalsTestPage.new(test_context).render.to_s
+
+      html.should contain(%(name="honeypot_signals"))
+      html.should contain(%(id="honeypot_signals"))
+      html.should contain(%(document.querySelector(&#39;#honeypot_signals&#39;)))
+    end
+  end
 end
 
 abstract class LuckyHoneypotBaseTestPage
@@ -75,6 +85,13 @@ end
 class LuckyHoneypotTagWithAdditionalAttributesTestPage < LuckyHoneypotBaseTestPage
   def render
     honeypot_input("user:name", data_very: "lukcy")
+    view
+  end
+end
+
+class LuckyHoneypotSignalsTestPage < LuckyHoneypotBaseTestPage
+  def render
+    honeypot_signals
     view
   end
 end

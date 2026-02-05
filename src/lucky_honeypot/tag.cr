@@ -1,4 +1,6 @@
 module LuckyHoneypot::Tag
+  # Renders a visually hidden honeypot input tag with a given name. Any
+  # additional named arguments will be rendered as attributes.
   macro honeypot_input(name, **named_args)
     context.session.set(
       "{{ LuckyHoneypot::SESSION_KEY_PREFIX.id }}_{{ name.gsub(/\:/, "_").id }}",
@@ -7,13 +9,32 @@ module LuckyHoneypot::Tag
     input(
       name: {{ name }},
       type: "text",
-      aria_hidden:  true,
-      tabindex:     -1,
+      aria_hidden: true,
+      tabindex: -1,
       autocomplete: "off",
       {% unless named_args.has_key?(:class) || named_args.has_key?(:style) %}
         style: "position:absolute;left:-9999px;width:1px;height:1px;pointer-events:none;",
       {% end %}
       {{ named_args.double_splat }}
     )
+  end
+
+  # Renders and input and an input tracking script detecting mouse movements,
+  # touch gestures, keyboard input, and scroll triggers.
+  macro honeypot_signals
+    input_name = LuckyHoneypot.settings.signals_input_name
+    input name: input_name, type: "hidden", id: input_name
+    script <<-JS
+      (() => {
+        const s = { m: false, t: false, s: false, k: false }
+        const input = document.querySelector('##{input_name}')
+        const form = input.form
+        form.addEventListener('mousemove', () => s.m = true, { once: true })
+        form.addEventListener('touchstart', () => s.t = true, { once: true })
+        form.addEventListener('keydown', () => s.k = true, { once: true })
+        window.addEventListener('scroll', () => s.s = true, { once: true })
+        form.addEventListener('submit', () => input.value = JSON.stringify(s))
+      })();
+    JS
   end
 end
