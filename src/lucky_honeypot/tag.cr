@@ -24,12 +24,13 @@ module LuckyHoneypot::Tag
   macro honeypot_signals(
     name = LuckyHoneypot.settings.signals_input_name,
   )
-    input name: {{name}}, type: "hidden", id: {{name}}
+    dom_id = {{name}}.gsub(/:/, "_")
+    input name: {{name}}, type: "hidden", id: dom_id
     script do
       raw <<-JS
         (() => {
           const s = { m: false, t: false, s: false, k: false }
-          const input = document.querySelector('##{{{name.id}}}')
+          const input = document.querySelector('##{dom_id}')
           const form = input.form
           form.addEventListener('mousemove', () => s.m = true, { once: true })
           form.addEventListener('touchstart', () => s.t = true, { once: true })
