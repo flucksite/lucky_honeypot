@@ -24,17 +24,19 @@ module LuckyHoneypot::Tag
   macro honeypot_signals
     input_name = LuckyHoneypot.settings.signals_input_name
     input name: input_name, type: "hidden", id: input_name
-    script <<-JS
-      (() => {
-        const s = { m: false, t: false, s: false, k: false }
-        const input = document.querySelector('##{input_name}')
-        const form = input.form
-        form.addEventListener('mousemove', () => s.m = true, { once: true })
-        form.addEventListener('touchstart', () => s.t = true, { once: true })
-        form.addEventListener('keydown', () => s.k = true, { once: true })
-        window.addEventListener('scroll', () => s.s = true, { once: true })
-        form.addEventListener('submit', () => input.value = JSON.stringify(s))
-      })();
-    JS
+    script do
+      raw <<-JS
+        (() => {
+          const s = { m: false, t: false, s: false, k: false }
+          const input = document.querySelector('##{input_name}')
+          const form = input.form
+          form.addEventListener('mousemove', () => s.m = true, { once: true })
+          form.addEventListener('touchstart', () => s.t = true, { once: true })
+          form.addEventListener('keydown', () => s.k = true, { once: true })
+          window.addEventListener('scroll', () => s.s = true, { once: true })
+          form.addEventListener('submit', () => input.value = JSON.stringify(s))
+        })();
+      JS
+    end
   end
 end

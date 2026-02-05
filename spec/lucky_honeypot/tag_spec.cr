@@ -49,7 +49,7 @@ describe LuckyHoneypot::Tag do
 
       html.should contain(%(name="honeypot_signals"))
       html.should contain(%(id="honeypot_signals"))
-      html.should contain(%(document.querySelector(&#39;#honeypot_signals&#39;)))
+      html.should contain(%(document.querySelector('#honeypot_signals')))
     end
   end
 end
