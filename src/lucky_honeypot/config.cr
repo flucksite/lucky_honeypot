@@ -9,5 +9,8 @@ module LuckyHoneypot
 
     # Disables the submission delay entirely; useful in test environments.
     setting disable_delay : Bool = false
+
+    # Name of the signals input field
+    setting signals_input_name : String = "honeypot_signals"
   end
 end
