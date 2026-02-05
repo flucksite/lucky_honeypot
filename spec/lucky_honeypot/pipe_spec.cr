@@ -93,6 +93,32 @@ describe LuckyHoneypot::Pipe do
       context.session.get?(:honeypot_timestamp_user_website).should be_nil
     end
   end
+
+  describe "signals" do
+    it "tracks input signals to detect bot-like behavior" do
+      signals = {m: false, t: false, s: false, k: false}
+      body = URI::Params.encode({"honeypot_signals" => signals.to_json})
+      request = HTTP::Request.new("POST", "/honeypot_with_signals", headers: headers, body: body)
+      context = build_context(request)
+      context.session.set(:honeypot_timestamp_user_website, 5.seconds.ago.to_utc.to_unix_ms.to_s)
+
+      expect_raises(Exception, "Bot!") do
+        HoneypotWithSignals::Create.new(context, params).call
+      end
+    end
+
+    it "tracks input signals to detect human-like behavior" do
+      signals = {m: true, t: false, s: false, k: false}
+      body = URI::Params.encode({"honeypot_signals" => signals.to_json})
+      request = HTTP::Request.new("POST", "/honeypot_with_signals", headers: headers, body: body)
+      context = build_context(request)
+      context.session.set(:honeypot_timestamp_user_website, 5.seconds.ago.to_utc.to_unix_ms.to_s)
+
+      route = HoneypotWithSignals::Create.new(context, params).call
+
+      route.context.response.status.should eq(HTTP::Status::OK)
+    end
+  end
 end
 
 abstract class TestAction < Lucky::Action
@@ -119,6 +145,18 @@ class HoneypotWithCustomBlock::Create < TestAction
 
   post "/honeypot_with_block" do
     plain_text "hello"
+  end
+end
+
+class HoneypotWithSignals::Create < TestAction
+  include LuckyHoneypot::Pipe
+
+  post "/honeypot_with_signals" do
+    plain_text "hello"
+  end
+
+  private def honeypot_signals(rating : Float)
+    raise "Bot!" if rating < 0.25
   end
 end
 
