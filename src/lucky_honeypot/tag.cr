@@ -21,14 +21,15 @@ module LuckyHoneypot::Tag
 
   # Renders and input and an input tracking script detecting mouse movements,
   # touch gestures, keyboard input, and scroll triggers.
-  macro honeypot_signals
-    input_name = LuckyHoneypot.settings.signals_input_name
-    input name: input_name, type: "hidden", id: input_name
+  macro honeypot_signals(
+    name = LuckyHoneypot.settings.signals_input_name,
+  )
+    input name: {{name}}, type: "hidden", id: {{name}}
     script do
       raw <<-JS
         (() => {
           const s = { m: false, t: false, s: false, k: false }
-          const input = document.querySelector('##{input_name}')
+          const input = document.querySelector('##{{{name.id}}}')
           const form = input.form
           form.addEventListener('mousemove', () => s.m = true, { once: true })
           form.addEventListener('touchstart', () => s.t = true, { once: true })
