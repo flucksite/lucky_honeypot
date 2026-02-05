@@ -48,8 +48,7 @@ describe LuckyHoneypot::Tag do
       html = LuckyHoneypotSignalsTestPage.new(test_context).render.to_s
 
       html.should contain(%(name="honeypot_signals"))
-      html.should contain(%(id="honeypot_signals"))
-      html.should contain(%(document.querySelector('#honeypot_signals')))
+      html.should contain(%(document.currentScript.previousElementSibling))
     end
   end
 end
