@@ -103,15 +103,18 @@ honeypot_input "user:website", data_purpose: "not for humans"
 > verify submission timing. Consider this when you add your own field instead
 > of using this macro.
 
-### Configuring the submission delay
+### Configuration options
 
 ```crystal
 Habitat.configure do |settings|
   # Default required delay between page load and form submission.
-  setting.default_delay = 2.seconds
+  settings.default_delay = 2.seconds
 
   # Disables the submission delay entirely; useful in test environments.
-  setting.disable_delay = false
+  settings.disable_delay = false
+
+  # Default name for the signales input field
+  settings.signals_input_name = "honeypot_signals"
 end
 ```
 
@@ -221,7 +224,7 @@ signals.k?            # if true, keyboard input was detected
 > [!NOTE]
 > The human rating is calculated by averaging the `true` values. So `0` is most
 > certainly a bot, `0.25` might as well be a human if they only used the
-> keyboard and didn't scroll. In practice, this is unlikely unless a from is at
+> keyboard and didn't scroll. In practice, this is unlikely unless a form is at
 > the top of the page. Realistically, 0.5 is a good threshold because mouse,
 > scroll and keyboard are triggered in most cases on desktop, and on mobile all
 > four.
