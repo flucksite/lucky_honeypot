@@ -154,6 +154,73 @@ honeypot "note" do
 end
 ```
 
+## Detecting input signals
+
+This shard comes with simple input signals detection built-in. It monitors
+mouse movements, touch gestures, scroll triggers, and keyboard input. If any of
+those are detected, it adds to the likeliness of human interaction.
+
+To track the input signals, add the `honeypot_signals` tag to your form:
+
+```crystal
+honeypot_signals
+```
+
+Similar to the `honeypot_input` tag, it accepts a custom name and additional
+attributes:
+
+```crystal
+honeypot_signals "user:signals", data_some: "value"
+```
+
+The signals tag only tracks input signals and stores the result in a hidden
+field that is submitted with the form. It is up to you what to do with the
+information. For example, you could render a `head 204` if the human rating is
+below a certain threshold:
+
+```crystal
+class SignUps::Create < BrowserAction
+  include LuckyHoneypot::Pipe
+
+  post "/sign_up" do
+    # ...
+  end
+
+  private def honeypot_signals(rating : Float64)
+    if rating < 0.25
+      head 204
+    else
+      continue
+    end
+  end
+end
+```
+
+Or you could use it to flag a record in case of a suspicious submission:
+
+```crystal
+if LuckyHoneypot::Signals.human_rating(params.get(:honeypot_signals)) < 0.25
+  # Do your thing
+end
+```
+
+And if you want more information about which inputs where triggered:
+
+```crystal
+signals = LuckyHoneypot::Signals.from_json(params.get(:honeypot_signals))
+signals.human_rating  # a value between 0 (bot) and 1 (human)
+signals.m             # if true, the mouse was moved
+signals.t             # if true, a touch gesture was detected
+signals.s             # if true, a scroll was triggered
+signals.k             # if true, keyboard input was detected
+```
+
+> [!NOTE]
+> The human rating is simply calculated by averaging the `true` values. So `0`
+> is most certainly a bot, `0.25` might as well be a human if they only used
+> the keyboard or touch gestures. This calculation may be reformulated in the
+> future by adding weights.
+
 ## Security considerations
 
 This shard provides basic bot protection, but it should not be your only line of
