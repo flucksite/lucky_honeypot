@@ -58,6 +58,6 @@ module LuckyHoneypot::Pipe
   end
 
   # Placeholder callback to handle calculated human rating based on signals.
-  private def honeypot_signals(rating : Float64) : Void
+  private def honeypot_signals(rating : Float64) : Nil
   end
 end
