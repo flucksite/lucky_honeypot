@@ -113,7 +113,7 @@ Habitat.configure do |settings|
   # Disables the submission delay entirely; useful in test environments.
   settings.disable_delay = false
 
-  # Default name for the signales input field
+  # Default name for the signals input field
   settings.signals_input_name = "honeypot_signals"
 end
 ```
