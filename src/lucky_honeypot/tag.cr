@@ -1,5 +1,5 @@
 module LuckyHoneypot::Tag
-  # Renders a visually hidden honeypot input tag with a given name. Any
+  # Renders a visually hidden honeypot input tag with the given name. Any
   # additional named arguments will be rendered as attributes.
   macro honeypot_input(name, **named_args)
     context.session.set(
@@ -23,8 +23,9 @@ module LuckyHoneypot::Tag
   # touch gestures, keyboard input, and scroll triggers.
   macro honeypot_signals(
     name = LuckyHoneypot.settings.signals_input_name,
+    **named_args,
   )
-    input name: {{name}}, type: "hidden"
+  input(name: {{name}}, type: "hidden", {{ named_args.double_splat }})
     script do
       raw <<-JS
         (() => {

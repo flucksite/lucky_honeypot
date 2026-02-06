@@ -39,7 +39,7 @@ describe LuckyHoneypot::Tag do
     it "renders a honeypot with a additional attributes" do
       html = LuckyHoneypotTagWithAdditionalAttributesTestPage.new(test_context).render.to_s
 
-      html.should contain(%(data-very="lukcy"))
+      html.should contain(%(data-very="lucky"))
     end
   end
 
@@ -49,6 +49,13 @@ describe LuckyHoneypot::Tag do
 
       html.should contain(%(name="honeypot_signals"))
       html.should contain(%(document.currentScript.previousElementSibling))
+    end
+
+    it "renders a honeypot signals tag with additional attributes" do
+      html = LuckyHoneypotSignalsWithAttributesTestPage.new(test_context).render.to_s
+
+      html.should contain(%(name="user:signals"))
+      html.should contain(%(data-very="lucky"))
     end
   end
 end
@@ -83,7 +90,7 @@ end
 
 class LuckyHoneypotTagWithAdditionalAttributesTestPage < LuckyHoneypotBaseTestPage
   def render
-    honeypot_input("user:name", data_very: "lukcy")
+    honeypot_input("user:name", data_very: "lucky")
     view
   end
 end
@@ -91,6 +98,13 @@ end
 class LuckyHoneypotSignalsTestPage < LuckyHoneypotBaseTestPage
   def render
     honeypot_signals
+    view
+  end
+end
+
+class LuckyHoneypotSignalsWithAttributesTestPage < LuckyHoneypotBaseTestPage
+  def render
+    honeypot_signals("user:signals", data_very: "lucky")
     view
   end
 end
