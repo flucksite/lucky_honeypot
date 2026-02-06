@@ -5,10 +5,10 @@ describe LuckyHoneypot::Signals do
     it "is initialized from a JSON object" do
       signals = LuckyHoneypot::Signals.from_json(test_signals_json(m: true))
 
-      signals.m.should be_true
-      signals.t.should be_false
-      signals.s.should be_false
-      signals.k.should be_false
+      signals.m?.should be_true
+      signals.t?.should be_false
+      signals.s?.should be_false
+      signals.k?.should be_false
     end
   end
 
