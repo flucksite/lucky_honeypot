@@ -256,4 +256,4 @@ for our commit messages, so please adhere to that pattern.
 
 ## Contributors
 
-- [Wout](https://github.com/your-github-user) - creator and maintainer
+- [Wout](https://codeberg.org/w0u7) - creator and maintainer
