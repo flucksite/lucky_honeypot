@@ -8,13 +8,16 @@
 
 ## How it works
 
-This shard uses two techniques to catch spambots:
+This shard uses three techniques to catch spambots:
 
-1. Invisible fields. Bots fill out every field, including ones hidden with CSS.
-2. Timing checks. Bots submit forms instantly, humans need time to fill them out.
+1. **Invisible fields**. Bots fill out every field, including ones hidden with CSS.
+2. **Timing checks**. Bots submit forms instantly, humans need more time.
+3. **Input signals**. Bots don't tend to trigger mouse/touch/scroll/keyboard events.
 
-When either check fails, the submission is quietly rejected. The bot thinks it
-succeeded and moves on.
+When either of the two first checks fail, the submission is quietly rejected.
+The bot thinks it succeeded and moves on. The third one can be used to reject
+submissions at a certain _human rating_ threshold, or to flag entries that may
+be suspicious.
 
 ## Installation
 
