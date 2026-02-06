@@ -216,10 +216,12 @@ signals.k?            # if true, keyboard input was detected
 ```
 
 > [!NOTE]
-> The human rating is simply calculated by averaging the `true` values. So `0`
-> is most certainly a bot, `0.25` might as well be a human if they only used
-> the keyboard or touch gestures. This calculation may be reformulated in the
-> future by adding weights.
+> The human rating is calculated by averaging the `true` values. So `0` is most
+> certainly a bot, `0.25` might as well be a human if they only used the
+> keyboard and didn't scroll. In practice, this is unlikely unless a from is at
+> the top of the page. Realistically, 0.5 is a good threshold because mouse,
+> scroll and keyboard are triggered in most cases on desktop, and on mobile all
+> four.
 
 ## Security considerations
 
