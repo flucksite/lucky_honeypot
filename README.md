@@ -215,10 +215,10 @@ And if you want more information about which inputs where triggered:
 ```crystal
 signals = LuckyHoneypot::Signals.from_json(params.get(:honeypot_signals))
 signals.human_rating  # a value between 0 (bot) and 1 (human)
-signals.m?            # if true, the mouse was moved
-signals.t?            # if true, a touch gesture was detected
-signals.s?            # if true, a scroll was triggered
-signals.k?            # if true, keyboard input was detected
+signals.mouse?        # if true, the mouse was moved
+signals.touch?        # if true, a touch gesture was detected
+signals.scroll?       # if true, a scroll was triggered
+signals.keyboard?     # if true, keyboard input was detected
 ```
 
 > [!NOTE]

@@ -3,19 +3,19 @@ require "json"
 struct LuckyHoneypot::Signals
   include JSON::Serializable
 
-  # Mouse movement
-  getter? m : Bool
-  # touch gesture
-  getter? t : Bool
-  # Scroll trigger
-  getter? s : Bool
-  # Keyboard input
-  getter? k : Bool
+  @[JSON::Field(key: "m")]
+  getter? mouse : Bool
+  @[JSON::Field(key: "t")]
+  getter? touch : Bool
+  @[JSON::Field(key: "s")]
+  getter? scroll : Bool
+  @[JSON::Field(key: "k")]
+  getter? keyboard : Bool
 
   # Calculates the likelyhood of a human (0 being a bot, 1 being a human). Any
   # value above 0 is already a good chance.
   def human_rating : Float64
-    [m?, t?, s?, k?].count(&.itself) / 4
+    [mouse?, touch?, scroll?, keyboard?].count(&.itself) / 4
   end
 
   # Convenience method to caclulate the human rating form a class method.
