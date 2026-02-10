@@ -226,7 +226,7 @@ signals.keyboard?     # if true, keyboard input was detected
 > certainly a dumb bot, `0.25` could be a more sophisticated bot triggering the
 > keyboard alone, but it might as well be a human if they only used the
 > keyboard and didn't scroll. In practice, this is unlikely unless a form is at
-> the top of the page. Realistically, 0.5 is a good threshold because scroll
+> the top of the page. Realistically, `0.5` is a good threshold because scroll
 > and keyboard are triggered in most cases on desktop, and on mobile all four.
 
 ## Security considerations
