@@ -181,28 +181,8 @@ honeypot_signals "user:signals", data_some: "value"
 
 The signals tag only tracks input signals and stores the result in a hidden
 field that is submitted with the form. It is up to you what to do with the
-information. For example, you could render a `head 204` if the human rating is
-below a certain threshold:
-
-```crystal
-class SignUps::Create < BrowserAction
-  include LuckyHoneypot::Pipe
-
-  post "/sign_up" do
-    # ...
-  end
-
-  private def honeypot_signals(rating : Float64)
-    if rating < 0.25
-      head 204
-    else
-      continue
-    end
-  end
-end
-```
-
-Or you could use it to flag a record in case of a suspicious submission:
+information. You could for example use it to flag a record in case of a
+suspicious submission:
 
 ```crystal
 if LuckyHoneypot::Signals.human_rating(params.get(:honeypot_signals)) < 0.25
