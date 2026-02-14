@@ -96,7 +96,7 @@ describe LuckyHoneypot::Pipe do
 
   describe "signals" do
     it "tracks input signals to detect bot-like behavior" do
-      signals = {m: false, t: false, s: false, k: false}
+      signals = {m: false, t: false, s: false, k: false, f: false}
       body = URI::Params.encode({"honeypot_signals" => signals.to_json})
       request = HTTP::Request.new("POST", "/honeypot_with_signals", headers: headers, body: body)
       context = build_context(request)
@@ -156,7 +156,7 @@ class HoneypotWithSignals::Create < TestAction
   end
 
   private def honeypot_signals(rating : Float)
-    raise "Bot!" if rating < 0.25
+    raise "Bot!" if rating < 0.2
   end
 end
 

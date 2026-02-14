@@ -29,12 +29,13 @@ module LuckyHoneypot::Tag
     script do
       raw <<-JS
       (() => {
-        const s = { m: false, t: false, s: false, k: false }
+        const s = { m: false, t: false, s: false, k: false, f: false }
         const input = document.currentScript.previousElementSibling
         const form = input.form
         form.addEventListener('mousemove', () => s.m = true, { once: true })
         form.addEventListener('touchstart', () => s.t = true, { once: true })
         form.addEventListener('keydown', () => s.k = true, { once: true })
+        form.addEventListener('focusin', () => s.f = true, { once: true })
         window.addEventListener('scroll', () => s.s = true, { once: true })
         form.addEventListener('submit', () => input.value = JSON.stringify(s))
       })();

@@ -9,6 +9,7 @@ describe LuckyHoneypot::Signals do
       signals.touch?.should be_false
       signals.scroll?.should be_false
       signals.keyboard?.should be_false
+      signals.focus?.should be_false
     end
   end
 
@@ -17,20 +18,26 @@ describe LuckyHoneypot::Signals do
       LuckyHoneypot::Signals.from_json(test_signals_json).human_rating
         .should eq(0)
       LuckyHoneypot::Signals.from_json(test_signals_json(m: true)).human_rating
-        .should eq(0.25)
+        .should eq(0.2)
       LuckyHoneypot::Signals.from_json(test_signals_json(m: true, t: true)).human_rating
-        .should eq(0.5)
+        .should eq(0.4)
     end
   end
 
   describe ".human_rating" do
     it "calculates a human rating based on the given signals" do
       LuckyHoneypot::Signals.human_rating(test_signals_json(k: true))
-        .should eq(0.25)
+        .should eq(0.2)
     end
   end
 end
 
-private def test_signals_json(m = false, t = false, s = false, k = false)
-  {m: m, t: t, s: s, k: k}.to_json
+private def test_signals_json(
+  m = false,
+  t = false,
+  s = false,
+  k = false,
+  f = false,
+)
+  {m: m, t: t, s: s, k: k, f: f}.to_json
 end
