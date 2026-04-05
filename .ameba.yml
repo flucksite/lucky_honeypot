@@ -7,6 +7,8 @@
 
 Version: "1.7.0-dev"
 
+# False positive: Habitat.create macro expands to assignments that ameba
+# considers useless, but they are used by the Habitat configuration DSL.
 Lint/UselessAssign:
   Excluded:
   - src/lucky_honeypot/config.cr
