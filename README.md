@@ -225,7 +225,7 @@ defense. Here are few important points to consider:
 - The timing check compares wall-clock timestamps, which makes it resilient to
   timing attacks since the check is a simple threshold comparison
 - This shard works alongside Lucky's built-in CSRF protection. The honeypot
-  fields are regular form inputs and don't interfere with CSRF tokens
+  fields are regular form inputs and do not interfere with CSRF tokens
 
 For most use cases (contact forms, newsletter signups, etc.), this shard
 provides excellent protection with zero user friction. By adding a honeypot,
