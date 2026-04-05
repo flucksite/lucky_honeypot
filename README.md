@@ -1,6 +1,8 @@
 # lucky_honeypot
 
-🍯 Simple invisible captcha spam protection for Lucky Framework apps.
+[![CI](https://codeberg.org/fluck/lucky_honeypot/actions/workflows/test.yml/badge.svg)](https://codeberg.org/fluck/lucky_honeypot/actions?workflow=test.yml)
+
+Simple invisible captcha spam protection for Lucky Framework apps.
 
 > [!Note]
 > The original repository is hosted at
