@@ -217,6 +217,13 @@ defense. Here are few important points to consider:
 - It's not foolproof and sophisticated bots can bypass honeypots
 - Combine this with Lucky's built-in rate limiting feature
 - For high-value forms, consider adding CAPTCHA or email verification
+- The submission timestamp is stored in the session. If sessions are
+  compromised, an attacker could manipulate timing checks. Make sure your
+  session store is secure and uses signed cookies (Lucky's default)
+- The timing check compares wall-clock timestamps, which makes it resilient to
+  timing attacks since the check is a simple threshold comparison
+- This shard works alongside Lucky's built-in CSRF protection. The honeypot
+  fields are regular form inputs and don't interfere with CSRF tokens
 
 For most use cases (contact forms, newsletter signups, etc.), this shard
 provides excellent protection with zero user friction. By adding a honeypot,
