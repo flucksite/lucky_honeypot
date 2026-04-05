@@ -1,7 +1,7 @@
 # lucky_honeypot
 
 [![CI](https://codeberg.org/fluck/lucky_honeypot/actions/workflows/test.yml/badge.svg)](https://codeberg.org/fluck/lucky_honeypot/actions?workflow=test.yml)
-[![Version](https://img.shields.io/gitea/v/release/fluck/lucky_honeypot?gitea_url=https%3A%2F%2Fcodeberg.org)](https://codeberg.org/fluck/lucky_honeypot/releases)
+[![Version](https://img.shields.io/gitea/v/fluck/lucky_honeypot?gitea_url=https://codeberg.org)](https://codeberg.org/fluck/lucky_honeypot/releases)
 
 Simple invisible captcha spam protection for Lucky Framework apps.
 
