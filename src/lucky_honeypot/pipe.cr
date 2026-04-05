@@ -42,7 +42,7 @@ module LuckyHoneypot::Pipe
     wait : Time::Span,
   ) : Bool
     return true if LuckyHoneypot.settings.disable_delay?
-    return false unless timestamp = session.get?(key_name).try(&.to_i64)
+    return false unless timestamp = session.get?(key_name).try(&.to_i64?)
 
     wait < (Time.utc.to_unix_ms - timestamp).milliseconds
   end
@@ -52,8 +52,9 @@ module LuckyHoneypot::Pipe
     json = params.get(LuckyHoneypot.settings.signals_input_name)
     honeypot_signals LuckyHoneypot::Signals.from_json(json).human_rating
     continue
-  rescue JSON::ParseException | Lucky::MissingParamError
-    honeypot_signals 0
+  rescue ex : JSON::ParseException | Lucky::MissingParamError
+    Log.warn(exception: ex) { "honeypot signals evaluation failed" }
+    honeypot_signals 0.0
     continue
   end
 
