@@ -2,10 +2,10 @@ on: [push]
 
 jobs:
   test:
-    runs-on: codeberg-tiny
+    runs-on: codeberg-small
     strategy:
       matrix:
-        crystal-version: ['1.14', 'latest']
+        crystal-version: ["1.14", "latest"]
     container:
       image: crystallang/crystal:${{ matrix.crystal-version }}
     steps:
