@@ -22,6 +22,25 @@ describe LuckyHoneypot::Signals do
       LuckyHoneypot::Signals.from_json(test_signals_json(m: true, t: true)).human_rating
         .should eq(0.4)
     end
+
+    it "returns 1.0 when all signals are true" do
+      LuckyHoneypot::Signals.from_json(test_signals_json(m: true, t: true, s: true, k: true, f: true)).human_rating
+        .should eq(1.0)
+    end
+  end
+
+  describe "invalid JSON" do
+    it "raises on invalid JSON" do
+      expect_raises(JSON::ParseException) do
+        LuckyHoneypot::Signals.from_json("not json")
+      end
+    end
+
+    it "raises on missing keys" do
+      expect_raises(JSON::ParseException) do
+        LuckyHoneypot::Signals.from_json(%({"m": true}))
+      end
+    end
   end
 
   describe ".human_rating" do

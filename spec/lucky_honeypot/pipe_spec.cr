@@ -94,6 +94,53 @@ describe LuckyHoneypot::Pipe do
     end
   end
 
+  it "handles multiple honeypots independently" do
+    body = URI::Params.encode({"note" => "spam"})
+    request = HTTP::Request.new("POST", "/honeypot_multiple", headers: headers, body: body)
+    context = build_context(request)
+    context.session.set(:honeypot_timestamp_user_website, Time.utc.to_unix_ms.to_s)
+    context.session.set(:honeypot_timestamp_note, Time.utc.to_unix_ms.to_s)
+
+    sleep 101.milliseconds
+
+    route = HoneypotWithMultiple::Create.new(context, params).call
+
+    route.context.response.status.should eq(HTTP::Status::NO_CONTENT)
+    context.session.get?(:honeypot_timestamp_note).should_not be_nil
+  end
+
+  it "accepts multiple honeypots when all pass" do
+    request = HTTP::Request.new("POST", "/honeypot_multiple", headers: headers)
+    context = build_context(request)
+    context.session.set(:honeypot_timestamp_user_website, Time.utc.to_unix_ms.to_s)
+    context.session.set(:honeypot_timestamp_note, Time.utc.to_unix_ms.to_s)
+
+    sleep 101.milliseconds
+
+    route = HoneypotWithMultiple::Create.new(context, params).call
+
+    route.context.response.status.should eq(HTTP::Status::OK)
+  end
+
+  it "handles missing session timestamp gracefully" do
+    request = HTTP::Request.new("POST", "/honeypot", headers: headers)
+    context = build_context(request)
+
+    route = HoneypotWithDefaults::Create.new(context, params).call
+
+    route.context.response.status.should eq(HTTP::Status::NO_CONTENT)
+  end
+
+  it "handles corrupted session timestamp" do
+    request = HTTP::Request.new("POST", "/honeypot", headers: headers)
+    context = build_context(request)
+    context.session.set(:honeypot_timestamp_user_website, "not_a_number")
+
+    route = HoneypotWithDefaults::Create.new(context, params).call
+
+    route.context.response.status.should eq(HTTP::Status::NO_CONTENT)
+  end
+
   describe "signals" do
     it "tracks input signals to detect bot-like behavior" do
       signals = {m: false, t: false, s: false, k: false, f: false}
@@ -107,8 +154,29 @@ describe LuckyHoneypot::Pipe do
       end
     end
 
+    it "handles invalid JSON signals gracefully" do
+      body = URI::Params.encode({"honeypot_signals" => "not json"})
+      request = HTTP::Request.new("POST", "/honeypot_with_signals", headers: headers, body: body)
+      context = build_context(request)
+      context.session.set(:honeypot_timestamp_user_website, 5.seconds.ago.to_utc.to_unix_ms.to_s)
+
+      expect_raises(Exception, "Bot!") do
+        HoneypotWithSignals::Create.new(context, params).call
+      end
+    end
+
+    it "handles missing signals param gracefully" do
+      request = HTTP::Request.new("POST", "/honeypot_with_signals", headers: headers)
+      context = build_context(request)
+      context.session.set(:honeypot_timestamp_user_website, 5.seconds.ago.to_utc.to_unix_ms.to_s)
+
+      expect_raises(Exception, "Bot!") do
+        HoneypotWithSignals::Create.new(context, params).call
+      end
+    end
+
     it "tracks input signals to detect human-like behavior" do
-      signals = {m: true, t: false, s: false, k: false}
+      signals = {m: true, t: false, s: false, k: false, f: false}
       body = URI::Params.encode({"honeypot_signals" => signals.to_json})
       request = HTTP::Request.new("POST", "/honeypot_with_signals", headers: headers, body: body)
       context = build_context(request)
@@ -144,6 +212,17 @@ class HoneypotWithCustomBlock::Create < TestAction
   end
 
   post "/honeypot_with_block" do
+    plain_text "hello"
+  end
+end
+
+class HoneypotWithMultiple::Create < TestAction
+  include LuckyHoneypot::Pipe
+
+  honeypot "user:website", wait: 100.milliseconds
+  honeypot "note", wait: 100.milliseconds
+
+  post "/honeypot_multiple" do
     plain_text "hello"
   end
 end
