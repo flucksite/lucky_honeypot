@@ -19,8 +19,8 @@ module LuckyHoneypot::Tag
     )
   end
 
-  # Renders and input and an input tracking script detecting mouse movements,
-  # touch gestures, keyboard input, and scroll triggers.
+  # Renders an input and a tracking script detecting mouse movements, touch
+  # gestures, keyboard input, scroll triggers, and focus events.
   macro honeypot_signals(**named_args)
     input(
       name: LuckyHoneypot.settings.signals_input_name,

@@ -15,7 +15,7 @@ This shard uses three techniques to catch spambots:
 
 1. **Invisible fields**. Bots fill out every field, including ones hidden with CSS.
 2. **Timing checks**. Bots submit forms instantly, humans need more time.
-3. **Input signals**. Bots don't tend to trigger mouse/touch/scroll/keyboard events.
+3. **Input signals**. Bots don't tend to trigger mouse, touch, scroll, keyboard, or focus events.
 
 When either of the two first checks fail, the submission is quietly rejected.
 The bot thinks it succeeded and moves on. The third one can be used to reject
@@ -166,8 +166,9 @@ end
 ## Detecting input signals
 
 This shard comes with simple input signals detection built-in. It monitors
-mouse movements, touch gestures, scroll triggers, and keyboard input. If any of
-those are detected, it adds to the likeliness of human interaction.
+mouse movements, touch gestures, scroll triggers, keyboard input, and focus
+events. If any of those are detected, it adds to the likeliness of human
+interaction.
 
 To track the input signals, add the `honeypot_signals` tag to your form:
 
@@ -187,29 +188,35 @@ information. You could for example use it to flag a record in case of a
 suspicious submission:
 
 ```crystal
-if LuckyHoneypot::Signals.human_rating(params.get(:honeypot_signals)) < 0.25
+if LuckyHoneypot::Signals.human_rating(params.get("honeypot_signals")) < 0.2
   # Do your thing
 end
 ```
 
-And if you want more information about which inputs where triggered:
+And if you want more information about which inputs were triggered:
 
 ```crystal
-signals = LuckyHoneypot::Signals.from_json(params.get(:honeypot_signals))
+signals = LuckyHoneypot::Signals.from_json(params.get("honeypot_signals"))
 signals.human_rating  # a value between 0 (bot) and 1 (human)
 signals.mouse?        # if true, the mouse was moved
 signals.touch?        # if true, a touch gesture was detected
 signals.scroll?       # if true, a scroll was triggered
 signals.keyboard?     # if true, keyboard input was detected
+signals.focus?        # if true, input focus was triggered
 ```
 
 > [!NOTE]
-> The human rating is calculated by averaging the `true` values. So `0` is most
-> certainly a dumb bot, `0.25` could be a more sophisticated bot triggering the
-> keyboard alone, but it might as well be a human if they only used the
-> keyboard and didn't scroll. In practice, this is unlikely unless a form is at
-> the top of the page. Realistically, `0.5` is a good threshold because scroll
-> and keyboard are triggered in most cases on desktop, and on mobile all four.
+> The human rating is the fraction of the five signals (mouse, touch, scroll,
+> keyboard, focus) that fired, so each one contributes `0.2`. A score of `0`
+> is almost certainly a dumb bot, while `0.2` could be a sophisticated bot
+> triggering a single signal, though a human filling out a short form at the
+> top of the page may also land there.
+>
+> `0.4` is a reasonable rejection threshold: it still catches bots that fake
+> one or two signals, but avoids false positives for autofill and password
+> manager submissions, which often only trigger focus plus mouse or touch.
+> Use `0.6` as a "flag as suspicious" threshold rather than a hard reject,
+> since legitimate autofill users will frequently fall below it.
 
 ## Security considerations
 
