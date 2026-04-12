@@ -21,11 +21,12 @@ module LuckyHoneypot::Tag
 
   # Renders and input and an input tracking script detecting mouse movements,
   # touch gestures, keyboard input, and scroll triggers.
-  macro honeypot_signals(
-    name = LuckyHoneypot.settings.signals_input_name,
-    **named_args,
-  )
-  input(name: {{ name }}, type: "hidden", {{ named_args.double_splat }})
+  macro honeypot_signals(**named_args)
+    input(
+      name: LuckyHoneypot.settings.signals_input_name,
+      type: "hidden",
+      {{ named_args.double_splat }}
+    )
     script do
       raw <<-JS
       (() => {

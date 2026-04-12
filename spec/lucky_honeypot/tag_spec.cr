@@ -54,7 +54,7 @@ describe LuckyHoneypot::Tag do
     it "renders a honeypot signals tag with additional attributes" do
       html = LuckyHoneypotSignalsWithAttributesTestPage.new(test_context).render.to_s
 
-      html.should contain(%(name="user:signals"))
+      html.should contain(%(name="honeypot_signals"))
       html.should contain(%(data-very="lucky"))
     end
   end
@@ -104,7 +104,7 @@ end
 
 class LuckyHoneypotSignalsWithAttributesTestPage < LuckyHoneypotBaseTestPage
   def render
-    honeypot_signals("user:signals", data_very: "lucky")
+    honeypot_signals(data_very: "lucky")
     view
   end
 end

@@ -175,11 +175,10 @@ To track the input signals, add the `honeypot_signals` tag to your form:
 honeypot_signals
 ```
 
-Similar to the `honeypot_input` tag, it accepts a custom name and additional
-attributes:
+Similar to the `honeypot_input` tag, it accepts additional attributes:
 
 ```crystal
-honeypot_signals "user:signals", data_some: "value"
+honeypot_signals data_some: "value"
 ```
 
 The signals tag only tracks input signals and stores the result in a hidden
