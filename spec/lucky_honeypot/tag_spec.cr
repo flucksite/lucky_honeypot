@@ -57,6 +57,15 @@ describe LuckyHoneypot::Tag do
       html.should contain(%(name="honeypot_signals"))
       html.should contain(%(data-very="lucky"))
     end
+
+    it "respects a custom signals_input_name setting" do
+      LuckyHoneypot.temp_config(signals_input_name: "hp_sig") do
+        html = LuckyHoneypotSignalsTestPage.new(test_context).render.to_s
+
+        html.should contain(%(name="hp_sig"))
+        html.should_not contain(%(name="honeypot_signals"))
+      end
+    end
   end
 end
 

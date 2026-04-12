@@ -176,7 +176,7 @@ describe LuckyHoneypot::Pipe do
     end
 
     it "tracks input signals to detect human-like behavior" do
-      signals = {m: true, t: false, s: false, k: false, f: false}
+      signals = {m: true, t: false, s: false, k: true, f: false}
       body = URI::Params.encode({"honeypot_signals" => signals.to_json})
       request = HTTP::Request.new("POST", "/honeypot_with_signals", headers: headers, body: body)
       context = build_context(request)
@@ -185,6 +185,50 @@ describe LuckyHoneypot::Pipe do
       route = HoneypotWithSignals::Create.new(context, params).call
 
       route.context.response.status.should eq(HTTP::Status::OK)
+    end
+
+    it "respects a custom signals_input_name setting" do
+      LuckyHoneypot.temp_config(signals_input_name: "hp_sig") do
+        signals = {m: true, t: false, s: false, k: true, f: false}
+        body = URI::Params.encode({"hp_sig" => signals.to_json})
+        request = HTTP::Request.new("POST", "/honeypot_with_signals", headers: headers, body: body)
+        context = build_context(request)
+        context.session.set(:honeypot_timestamp_user_website, 5.seconds.ago.to_utc.to_unix_ms.to_s)
+
+        route = HoneypotWithSignals::Create.new(context, params).call
+
+        route.context.response.status.should eq(HTTP::Status::OK)
+      end
+    end
+  end
+
+  describe "default_delay setting" do
+    it "rejects submissions faster than the configured default_delay" do
+      request = HTTP::Request.new("POST", "/honeypot_default_delay", headers: headers)
+      context = build_context(request)
+      context.session.set(:honeypot_timestamp_user_website, Time.utc.to_unix_ms.to_s)
+
+      LuckyHoneypot.temp_config(default_delay: 100.milliseconds) do
+        sleep 50.milliseconds
+
+        route = HoneypotWithDefaultDelay::Create.new(context, params).call
+
+        route.context.response.status.should eq(HTTP::Status::NO_CONTENT)
+      end
+    end
+
+    it "accepts submissions after the configured default_delay has elapsed" do
+      request = HTTP::Request.new("POST", "/honeypot_default_delay", headers: headers)
+      context = build_context(request)
+      context.session.set(:honeypot_timestamp_user_website, Time.utc.to_unix_ms.to_s)
+
+      LuckyHoneypot.temp_config(default_delay: 100.milliseconds) do
+        sleep 101.milliseconds
+
+        route = HoneypotWithDefaultDelay::Create.new(context, params).call
+
+        route.context.response.status.should eq(HTTP::Status::OK)
+      end
     end
   end
 end
@@ -223,6 +267,16 @@ class HoneypotWithMultiple::Create < TestAction
   honeypot "note", wait: 100.milliseconds
 
   post "/honeypot_multiple" do
+    plain_text "hello"
+  end
+end
+
+class HoneypotWithDefaultDelay::Create < TestAction
+  include LuckyHoneypot::Pipe
+
+  honeypot "user:website"
+
+  post "/honeypot_default_delay" do
     plain_text "hello"
   end
 end
