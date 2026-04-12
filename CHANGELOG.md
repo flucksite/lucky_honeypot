@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-04-12
+
+### Changed
+
+- **Breaking:** removed the `name` positional argument from the
+  `honeypot_signals` macro. The input name is now always read from
+  `LuckyHoneypot.settings.signals_input_name`. Callers passing a name
+  (e.g. `honeypot_signals "user:signals"`) must drop the argument and
+  configure `signals_input_name` instead.
+
+### Fixed
+
+- `Signals.human_rating` class method return type (`Float` to `Float64`)
+
+### Added
+
+- Test coverage for the `default_delay` setting fallback when `wait:` is
+  omitted from the `honeypot` macro
+- Test coverage for a custom `signals_input_name` setting in both the tag
+  and the pipe
+
+## [0.6.1] - 2026-04-05
+
 ### Added
 
 - CI pipeline using Forgejo Actions
@@ -66,7 +89,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Custom HTTP response handling via block
 - Support for multiple honeypots per action
 
-[Unreleased]: https://codeberg.org/fluck/lucky_honeypot/compare/v0.6.0...HEAD
+[Unreleased]: https://codeberg.org/fluck/lucky_honeypot/compare/v0.7.0...HEAD
+[0.7.0]: https://codeberg.org/fluck/lucky_honeypot/compare/v0.6.1...v0.7.0
+[0.6.1]: https://codeberg.org/fluck/lucky_honeypot/compare/v0.6.0...v0.6.1
 [0.6.0]: https://codeberg.org/fluck/lucky_honeypot/compare/v0.5.0...v0.6.0
 [0.5.0]: https://codeberg.org/fluck/lucky_honeypot/compare/v0.4.0...v0.5.0
 [0.4.0]: https://codeberg.org/fluck/lucky_honeypot/compare/v0.3.0...v0.4.0
