@@ -49,8 +49,9 @@ module LuckyHoneypot::Pipe
 
   # Calculates the results of the user interaction signals.
   private def honeypot_signals_evaluation
-    json = params.get(LuckyHoneypot.settings.signals_input_name)
-    honeypot_signals LuckyHoneypot::Signals.from_json(json).human_rating
+    if json = params.get?(LuckyHoneypot.settings.signals_input_name)
+      honeypot_signals LuckyHoneypot::Signals.from_json(json).human_rating
+    end
     continue
   rescue ex : JSON::ParseException | Lucky::MissingParamError
     Log.warn(exception: ex) { "honeypot signals evaluation failed" }

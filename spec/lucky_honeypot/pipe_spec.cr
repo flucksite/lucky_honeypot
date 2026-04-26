@@ -165,14 +165,14 @@ describe LuckyHoneypot::Pipe do
       end
     end
 
-    it "handles missing signals param gracefully" do
+    it "treats a missing signals param as optional" do
       request = HTTP::Request.new("POST", "/honeypot_with_signals", headers: headers)
       context = build_context(request)
       context.session.set(:honeypot_timestamp_user_website, 5.seconds.ago.to_utc.to_unix_ms.to_s)
 
-      expect_raises(Exception, "Bot!") do
-        HoneypotWithSignals::Create.new(context, params).call
-      end
+      route = HoneypotWithSignals::Create.new(context, params).call
+
+      route.context.response.status.should eq(HTTP::Status::OK)
     end
 
     it "tracks input signals to detect human-like behavior" do
